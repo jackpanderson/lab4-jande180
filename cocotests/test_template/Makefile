@@ -31,7 +31,7 @@ TOPLEVEL_LANG ?= verilog
 SIM ?= icarus	
 
 VERILOG_SOURCES = $(shell make -sC ../.. VERILOG_SOURCES) # List of Source Files
-VERILOG_INCLUDE_DIRS = $(PDKPATH) # Folders to look for source files
+VERILOG_INCLUDE_DIRS = ../../rtl
 
 COCOTB_TOPLEVEL     := afifo
 TOPLEVEL := $(COCOTB_TOPLEVEL)		# CocoTB Version 1
