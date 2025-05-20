@@ -2,8 +2,8 @@ module async_fifo # (parameter WIDTH = 32)
                 
                   (input clk_r_i,
                    input clk_w_i,
-                   input rsi_i, //Active LOW async reset
-                   input [WIDTH -1:0] i_wdata,
+                   input rst_i, //Active LOW async reset
+                   input [WIDTH - 1:0] i_wdata,
                    input i_wenable,
                    input i_renable,
                    
@@ -37,7 +37,13 @@ module async_fifo # (parameter WIDTH = 32)
             mem[5] <= 'b0;
             mem[6] <= 'b0;
             mem[7] <= 'b0;
+						w_ptr  <= 'b0;
         end
+				else if (i_wenable && !o_full) 
+				begin
+		        mem[w_ptr[2:0]] <= i_wdata;
+		        w_ptr <= w_ptr + 1;
+		    end
     end
     
     always_ff @ (posedge clk_r_i, negedge rst_i)
@@ -52,7 +58,14 @@ module async_fifo # (parameter WIDTH = 32)
             mem[5] <= 'b0;
             mem[6] <= 'b0;
             mem[7] <= 'b0;
+						r_ptr   <= 'b0;
         end
+
+				else if (i_renable && !o_empty) 
+				begin
+		        o_rdata <= mem[r_ptr[2:0]];
+		        r_ptr   <= r_ptr + 1;
+		    end
     end
 
     
