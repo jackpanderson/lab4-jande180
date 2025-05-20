@@ -25,7 +25,7 @@ module async_fifo # (parameter WIDTH = 32)
     assign o_empty = w_ptr_grey_sync == r_ptr_grey;
     assign o_full = (w_ptr_grey[3] == ~r_ptr_grey_sync[3]) && (w_ptr_grey[2:0] == r_ptr_grey_sync[2:0]); //mayhbe? check this
 
-    always_ff @ (posedge clk_w_i, negedge rst_i)
+    always_ff @ (posedge clk_w_i or negedge rst_i)
     begin
         if (!rst_i)
         begin
@@ -46,18 +46,10 @@ module async_fifo # (parameter WIDTH = 32)
 		    end
     end
     
-    always_ff @ (posedge clk_r_i, negedge rst_i)
+    always_ff @ (posedge clk_r_i or negedge rst_i)
     begin
         if (!rst_i)
         begin
-            mem[0] <= 'b0;
-            mem[1] <= 'b0;
-            mem[2] <= 'b0;
-            mem[3] <= 'b0;
-            mem[4] <= 'b0;
-            mem[5] <= 'b0;
-            mem[6] <= 'b0;
-            mem[7] <= 'b0;
 						r_ptr   <= 'b0;
         end
 
