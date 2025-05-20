@@ -17,12 +17,12 @@ module async_fifo # (parameter WIDTH = 32)
     binary2grey b2g_w (.bin(w_ptr), .grey(w_ptr_grey)); //Binary to grey encoders for read and write pointers
     binary2grey b2g_r (.bin(r_ptr), .grey(r_ptr_grey));
 
-    synchronizer synchro (.clk_r_i(clk_r_i), .clk_w_i(clk_w_i), .rst_i(rst_i),
-                          .grey_w_i(w_ptr_grey), .grey_r_i(r_ptr_grey),
-                          .grey_w_sync_o(w_ptr_grey_sync), .grey_r_sync_o(r_ptr_grey_sync));
+		synchronizer w_synchro (.clk_i(clk_w_i), .rst_i(rst_i), .grey_i(w_ptr_grey), .grey_sync_o(w_ptr_grey_sync));
+		synchronizer r_synchro (.clk_i(clk_r_i), .rst_i(rst_i), .grey_i(r_ptr_grey), .grey_sync_o(r_ptr_grey_sync));
+
     
 
-    assign o_empty = w_ptr_grey_sync == r_ptr_grey;
+		assign o_empty = w_ptr_grey_sync == r_ptr_grey;
     assign o_full = (w_ptr_grey[3] == ~r_ptr_grey_sync[3]) && (w_ptr_grey[2:0] == r_ptr_grey_sync[2:0]); //mayhbe? check this
 
     always_ff @ (posedge clk_w_i or negedge rst_i)
