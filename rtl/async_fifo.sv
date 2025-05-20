@@ -9,7 +9,7 @@ module async_fifo # (parameter WIDTH = 32)
                    
                    output logic [WIDTH-1:0] o_rdata,
                    output logic o_empty,
-                   output logic o_full)
+                   output logic o_full);
 
     logic [WIDTH - 1:0] mem [7:0]; //8x32bit, need 3 + 1 bit w/r pointers
     logic [2 + 1:0] w_ptr, r_ptr, w_ptr_grey, r_ptr_grey, r_ptr_grey_sync, w_ptr_grey_sync; //MAKE SYNCED !!!!!
@@ -17,8 +17,8 @@ module async_fifo # (parameter WIDTH = 32)
     binary2grey b2g_w (.bin(w_ptr), .grey(w_ptr_grey)); //Binary to grey encoders for read and write pointers
     binary2grey b2g_r (.bin(r_ptr), .grey(r_ptr_grey));
 
-		synchronizer w_synchro (.clk_i(clk_w_i), .rst_i(rst_i), .grey_i(w_ptr_grey), .grey_sync_o(w_ptr_grey_sync));
-		synchronizer r_synchro (.clk_i(clk_r_i), .rst_i(rst_i), .grey_i(r_ptr_grey), .grey_sync_o(r_ptr_grey_sync));
+		synchronizer w_synchro (.clk_i(clk_r_i), .rst_i(rst_i), .grey_i(w_ptr_grey), .grey_sync_o(w_ptr_grey_sync));
+		synchronizer r_synchro (.clk_i(clk_w_i), .rst_i(rst_i), .grey_i(r_ptr_grey), .grey_sync_o(r_ptr_grey_sync));
 
     
 
@@ -51,6 +51,7 @@ module async_fifo # (parameter WIDTH = 32)
         if (!rst_i)
         begin
 						r_ptr   <= 'b0;
+						o_rdata <= 'b0;
         end
 
 				else if (i_renable && !o_empty) 
